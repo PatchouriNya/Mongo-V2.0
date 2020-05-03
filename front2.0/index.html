@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="logo.ico" type="image/x-icon">
+<!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+    <link rel="stylesheet" href="/elementui/theme-chalk/index.css">
+    <meta charset="UTF-8">
+    <title>新闻</title>
+</head>
+<style>
+    *{
+        list-style: none;
+    }
+    a{
+        text-decoration: none;
+        color: blue;
+    }
+    html,body{
+        height: 100%;
+    }
+    body{
+        margin: 0;
+        padding: 0;
+    }
+    #app{
+        height: 100%;
+    }
+    .login-wrap{
+        background-color: #324152;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .login-wrap .login-form{
+        background-color: white;
+        width: 500px;
+        padding: 30px;
+        border-radius: 5px;
+    }
+    .login-wrap .login-form .login-btn{
+        width: 100%;
+    }
+</style>
+<body>
+
+
+<div id="app">
+<router-view></router-view>
+</div>
+
+
+</body>
+<script type="text/x-template" id="index">
+<div>
+
+    <h1><router-link style="color: red" :to="{name:'hot'}">查看热门新闻</router-link></h1>
+
+    <el-table :data="news" border style="width: 100%;">
+
+        <el-table-column prop="title" label="标题">
+            <template slot-scope="scope">
+                <router-link v-text="scope.row.title" :to="{name:'detail',params:{id:scope.row._id.$oid}}">
+
+                </router-link>
+            </template>
+        </el-table-column>
+        <el-table-column prop="author" label="作者"> </el-table-column>
+        <el-table-column prop="ctime" label="发布时间"> </el-table-column>
+        <el-table-column prop="click" label="点击量"> </el-table-column>
+
+    </el-table>
+
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="current"
+            :page-sizes="[2, 5, 10, 20]"
+            :page-size="size"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+    </el-pagination>
+</div>
+</script>
+
+<script type="text/x-template" id="hot">
+    <div>
+        <h1 style="color: red">TOP10</h1>
+    <el-table :data="news" border style="width: 100%;">
+
+        <el-table-column prop="title" label="标题">
+            <template slot-scope="scope">
+                <router-link style="color: red" v-text="scope.row.title" :to="{name:'detail',params:{id:scope.row._id.$oid}}">
+
+                </router-link>
+            </template>
+        </el-table-column>
+        <el-table-column prop="author" label="作者"> </el-table-column>
+        <el-table-column prop="ctime" label="发布时间"> </el-table-column>
+        <el-table-column prop="click" label="点击量"> </el-table-column>
+
+    </el-table>
+    </div>
+</script>
+
+<script type="text/x-template" id="detail">
+    <div style="margin-left: 100px;margin-right: 100px;">
+        <h1>{{data.title}}</h1><h5 style="font-weight: normal">{{data.desn}}</h5>
+        <h4>{{data.author}}发表于:{{data.ctime}}　　　点击量{{data.click}}</h4>
+        <div v-html="data.body"></div>
+
+        <hr>
+        <h1>评论区</h1>
+        <h4><button @click="show">评论</button></h4>
+        <div v-show="hide">
+        <textarea ref="comment" v-model="comment" name="comment" id="comment" cols="60" rows="10"></textarea>
+            <p><button @click="put()">发表</button></p>
+        </div>
+        <div v-for="item in comments" style="margin-left: 30px;margin-bottom: 30px">
+            <div v-if="!item.to">
+            <h5>{{item.nickname}}　发表于{{item.ctime}}　　<a href="javascript:void(0);" @click="toshow(item._id.$oid)">回复</a></h5>
+            <p style="margin-left: 20px">{{item.content}}</p>
+            </div>
+<!--            <div v-else>-->
+<!--                <h5>{{item.nickname}}　回复了　{{item.tonick}}　于{{item.ctime}}</h5>-->
+<!--                <p style="margin-left: 20px">{{item.content}}</p>-->
+<!--            </div>-->
+        </div>
+        <div v-for="item in comments" style="margin-left: 30px;margin-bottom: 30px">
+            <div v-if="item.to">
+                <h5>{{item.nickname}}　回复了　{{item.tonick}}　于{{item.ctime}}</h5>
+                <p style="margin-left: 20px">{{item.content}}</p>
+            </div>
+        </div>
+        <div v-show="tohide">
+            <textarea ref="toC" v-model="tocomment" cols="60" rows="10" ></textarea>
+            <p><button @click="toput(toid)">回复</button></p>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="login">
+    <div class="login-wrap">
+        <el-form ref="form"  label-width="80px" class="login-form">
+            <h2>用户登录</h2>
+            <el-form-item :model="LoginData" label="用户名">
+                <el-input type="text" v-model="LoginData.username"></el-input>
+            </el-form-item>
+
+            <el-form-item label="密码">
+                <el-input type="password" v-model="LoginData.password"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button class="login-btn" type="primary" @click="login">登录</el-button>
+            </el-form-item>
+
+            <el-form-item>
+            <el-button class="login-btn" type="danger" @click="register">注册</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</script>
+
+<script type="text/x-template" id="register">
+    <div class="login-wrap">
+        <el-form ref="form" label-width="80px" class="login-form">
+            <h2>用户注册</h2>
+            <el-form-item :model="FormData" label="用户名">
+                <el-input type="text" v-model="FormData.username"></el-input>
+            </el-form-item>
+
+            <el-form-item label="密码">
+                <el-input type="password" v-model="FormData.password"></el-input>
+            </el-form-item>
+
+            <el-form-item label="昵称">
+                <el-input type="text" v-model="FormData.nickname"></el-input>
+            </el-form-item>
+
+            <el-form-item label="手机">
+                <el-input type="text" v-model="FormData.mobile"></el-input>
+            </el-form-item>
+
+            <el-form-item label="邮箱">
+                <el-input type="text" v-model="FormData.email"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button class="login-btn" type="primary" @click="register">注册</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</script>
+</html>
+<script src="/js/vue.js"></script>
+<script src="/js/vue-router.js"></script>
+<script src="/js/axios.js"></script>
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+<script src="/elementui/index.js"></script>
+<script src="/js/jquery.js"></script>
+<script src="/js/layer/layer.js"></script>
+
+
+<script>
+    //定义新闻列表
+    const Index = {
+        template:'#index',
+        data(){
+            return {
+                news: [],
+                total:0,
+                size:5,
+                current:1
+            }
+        },
+        methods:{
+            handleSizeChange(size){
+                this.size = size;
+                // console.log(this.size)
+                this.getData(this);
+            },
+            handleCurrentChange(current){
+                this.current = current;
+                this.getData(this);
+            },
+            getData(that){
+                axios.get('http://news.blacksouls.cn/api/news?pagesize='+that.size+"&page="+that.current).then(data =>{
+                    if(data.data.code == 200) {
+                        that.news = data.data.data.data;
+                    }
+                });
+            }
+        },
+        mounted(){
+            axios.get('http://news.blacksouls.cn/api/news?pagesize='+this.size).then(data =>{
+                if(data.data.code == 200) {
+                    this.news = data.data.data.data;
+                    this.total = data.data.data.total;
+
+                }
+            });
+        }
+    }
+
+    const Hot = {
+        template:'#hot',
+        data(){
+            return {
+                news: []
+            }
+        },
+        mounted(){
+            axios.get('http://news.blacksouls.cn/api/hot').then(data =>{
+                // console.log(data);
+                if(data.data.code == 200) {
+                    this.news = data.data.data;
+                }
+            });
+        }
+
+
+    }
+
+    const Login = {
+        template:'#login',
+        data(){
+            return {
+                LoginData:{}
+            }
+        },
+        methods:{
+            login(){
+                axios.post('http://news.blacksouls.cn/api/login/login',this.LoginData).then(data=>{
+                    if(data.data.code == 200){
+                        // console.log(data.data.data._id.$oid);
+                        layer.msg('登陆成功',{icon:1,time:3000});
+                        localStorage.setItem('id',data.data.data._id.$oid);
+                        this.$router.push({name:'index',params: {token:data.data.data.token,id:data.data.data._id.$oid}});
+                    }
+                });
+            },
+            register(){
+                this.$router.push({path:'/register'});
+            }
+        },
+        mounted(){
+
+        }
+    }
+
+    //详情组件
+    const Detail = {
+        template: '#detail',
+        data(){
+            return{
+                id:'',
+                data:{},
+                hide:false,
+                tohide:false,
+                comment:'',
+                tocomment:'',
+                comments:[],
+                toid:''
+            }
+        },
+        methods:{
+            getComments(){
+                axios.get('http://news.blacksouls.cn/api/comments/'+this.$route.params.id).then(data=>{
+                        // console.log(data);
+                    if(data.data.code == 200){
+                        this.comments = data.data.data;
+                    }
+
+                });
+            },
+            put(){
+                var userid = localStorage.getItem('id');
+                if(userid){
+                    var newsid = this.$route.params.id;
+
+                    // console.log(this.comment,userid,newsid)
+                    var arr = {};
+                    // arr.push(userid,newsid,this.comment);
+                    arr.userid = userid;
+                    arr.newsid = newsid;
+                    arr.content = this.comment;
+                    // console.log(arr)
+
+                    axios.post('http://news.blacksouls.cn/api/comments/create',arr).then(data=>{
+                        console.log(data);
+                        if(data.data.code == 200){
+                            this.$router.go(0);
+                        }else if(data.data.msg == '300'){
+                            layer.msg('同一个用户对一篇文章只能评论一次',{icon:2,time:1500});
+                        }
+                        else{
+                            layer.msg('ID有误请重新登录',{icon:2,time:1500});
+                            this.$router.push({path:'/'});
+                        }
+                    });
+                }else {
+                    layer.msg('请先登录',{icon:2,time:1500});
+                    this.$router.push({path:'/'});
+                }
+
+
+            },
+            toput(toid){
+                // console.log(toid);
+                var userid = localStorage.getItem('id');
+                if(userid){
+                    var newsid = this.$route.params.id;
+                    var to = toid;
+                    // console.log(this.comment,userid,newsid)
+                    var arr = {};
+                    // arr.push(userid,newsid,this.comment);
+                    arr.userid = userid;
+                    arr.newsid = newsid;
+                    arr.content = this.tocomment;
+                    arr.to = to;
+                    // console.log(arr)
+
+                    axios.post('http://news.blacksouls.cn/api/comments/create',arr).then(data=>{
+                        if(data.data.code == 200){
+                            // console.log(data);
+                            this.$router.go(0);
+                        }else{
+                            layer.msg('ID有误请重新登录',{icon:2,time:1500});
+                            this.$router.push({path:'/'});
+                        }
+                    });
+                }else {
+                    layer.msg('请先登录',{icon:2,time:1500});
+                    this.$router.push({path:'/'});
+                }
+
+
+            },
+            show(){
+
+                this.hide = !this.hide;
+            },
+            toshow(id){
+              this.tohide = !this.tohide;
+              this.toid = id;
+            },
+            getData(){
+                this.id = this.$route.params.id;
+                axios.get('http://news.blacksouls.cn/api/news/'+this.id).then(data=>{
+                    this.data = data.data.data;
+                });
+            },
+            addClick(){
+                this.id = this.$route.params.id;
+                axios.get('http://news.blacksouls.cn/api/hot/'+this.id).then(data=>{
+
+                });
+            }
+        },
+        mounted(){
+            this.getData();
+            this.addClick();
+            this.getComments();
+        }
+    }
+
+    const Register = {
+        template: '#register',
+        data(){
+            return {
+                FormData:{}
+            }
+        },
+        methods:{
+            register(){
+                axios.post('http://news.blacksouls.cn/api/login/register',this.FormData).then(data=>{
+                    // console.log(data);
+                    if(data.data.code == 200){
+                        layer.msg('注册成功',{icon:1,time:5000});
+                        this.$router.push({path:'/'});
+                    }else if(data.data.code == 300){
+                        layer.msg('用户名已存在',{icon:2,time:1500});
+                    }else{
+                        layer.msg(data.data.msg,{icon:2,time:1500});
+                    }
+                });
+            }
+        }
+    }
+
+    //定义路由
+    const routes = [
+        {path:'/index',component:Index,name:'index'},
+        {path:'/detail/:id',component: Detail,name: 'detail'},
+        {path:'/',component:Login,name:'login'},
+        {path:'/hot',component:Hot,name:'hot'},
+        {path:'/register',component:Register,name:'Register'}
+    ]
+
+    const router = new VueRouter({
+        routes
+    })
+
+    //入口组件
+    const app = new Vue({
+        el:'#app',
+        router,
+
+    });
+
+</script>

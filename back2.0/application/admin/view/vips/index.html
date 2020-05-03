@@ -1,0 +1,124 @@
+<style type="text/css">
+    * {
+        user-select: none;
+    }
+    .pagination li {
+        list-style: none;
+        float: left;
+        margin-left: 10px;
+        padding: 0 10px;
+        background-color: #5a98de;
+        border: 1px solid #ccc;
+        height: 26px;
+        line-height: 26px;
+        cursor: pointer;
+        color: #fff;
+    }
+    .pagination li a {
+        color: white;
+        padding: 0;
+        line-height: inherit;
+        border: none;
+    }
+    .pagination li a:hover {
+        background-color: #5a98de;
+    }
+    .pagination li.active {
+        background-color: white;
+        color: gray;
+    }
+    .pagination li.disabled {
+        background-color: white;
+        color: gray;
+    }
+    element.style {
+        background: red;
+    }
+</style>
+<!-- 右 -->
+<div class="content">
+    <div class="header">
+        <h1 class="page-title">会员列表</h1>
+    </div>
+
+    <div class="well">
+        <!-- search button -->
+        <form action="" method="get" class="form-search">
+            用户ID：<input type="text" name="keyword" value="{$Think.get.keyword}">
+            <button class="btn btn-primary" type="submit">搜索</button>
+        </form>
+    </div>
+    <div class="well">
+        <!-- table -->
+        <form id="sc" action="{:url('admin/vips/delall')}" method="post">
+            <table class="table table-bordered table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th style="text-align: center;"><input type="checkbox" id="selectAll"></th>
+                    <th>编号</th>
+                    <th>用户名</th>
+                    <th>用户昵称</th>
+                    <th>电话</th>
+                    <th>邮箱</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name='data' id='vol' key="key"}
+                <tr class="success" style="height: 50px;">
+                    <td style="line-height: 50px;text-align: center;"><input type="checkbox" name="id[]" value="{$vol._id}"></td>
+                    <td style="line-height: 50px;">{$key}</td>
+                    <td style="line-height: 50px;">{$vol.username}</td>
+                    <td style="line-height: 50px;">{$vol.nickname}</td>
+                    <td style="line-height: 50px;">{$vol.mobile}</td>
+                    <td style="line-height: 50px;">{$vol.email}</td>
+                    <td style="line-height: 50px;">
+                        <a href="javascript:void(0);" class="del" data="{$vol._id}"> 删除 </a>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </form>
+        <button id="delall" class="btn btn-primary">删除所选</button>
+
+        <!-- pagination -->
+        {$fpage}
+    </div>
+    <!-- footer -->
+    <footer>
+        <hr>
+        <p>© 2017 <a href="javascript:void(0);" target="_blank">ADMIN</a></p>
+    </footer>
+</div>
+
+<form action="" method="POST" id="faker" style="display: none;">
+    <input type="hidden" name="_method" value="DELETE">
+</form>
+
+<script>
+    $(function(){
+        $('.del').click(function(){
+            if(confirm('确定要删除吗？')){
+                var id = $(this).attr('data');
+                var url = '/admin/vips/delete/id/' + id;
+                $('#faker').attr('action',url)
+                $('#faker').submit();
+            }
+        })
+
+        $('#delall').click(function () {
+            var bool = confirm('确定要删除吗');
+            if(bool){
+                $('#sc').submit();
+            }
+        });
+
+        //此项为上述代码简化
+        $("#selectAll").click(function() {
+            $(":checkbox[name='id[]']").prop("checked", this.checked); // this指代的你当前选择的这个元素的JS对象
+        });
+
+
+    })
+</script>

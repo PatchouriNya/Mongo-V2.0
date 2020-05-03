@@ -1,0 +1,85 @@
+<style type="text/css">
+    * {
+        user-select: none;
+    }
+    .pagination li {
+        list-style: none;
+        float: left;
+        margin-left: 10px;
+        padding: 0 10px;
+        background-color: #5a98de;
+        border: 1px solid #ccc;
+        height: 26px;
+        line-height: 26px;
+        cursor: pointer;
+        color: #fff;
+    }
+    .pagination li a {
+        color: white;
+        padding: 0;
+        line-height: inherit;
+        border: none;
+    }
+    .pagination li a:hover {
+        background-color: #5a98de;
+    }
+    .pagination li.active {
+        background-color: white;
+        color: gray;
+    }
+    .pagination li.disabled {
+        background-color: white;
+        color: gray;
+    }
+    element.style {
+        background: red;
+    }
+</style>
+<!-- 右 -->
+<div class="content">
+    <div class="header">
+        <h1 class="page-title">热门新闻</h1>
+    </div>
+
+    <div class="well">
+        <!-- search button -->
+        <h2>TOP10</h2>
+    </div>
+    <div class="well">
+        <!-- table -->
+            <table class="table table-bordered table-hover table-condensed">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>标题</th>
+                    <th>描述</th>
+                    <th>作者</th>
+                    <th>编辑时间</th>
+                    <th>点击量</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {volist name='data' id='vol' key="key"}
+                <tr class="success" style="height: 50px;">
+                    <td style="line-height: 50px;">{$key}</td>
+                    <td style="line-height: 50px;">{$vol.title}</td>
+                    <td style="line-height: 50px;">{$vol.desn}</td>
+                    <td style="line-height: 50px;">{$vol.author}</td>
+                    <td style="line-height: 50px;">{$vol.ctime|date="Y-m-d H:i:s",###}</td>
+                    <td style="line-height: 50px;">{$vol.click}</td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+
+        <!-- pagination -->
+    </div>
+    <!-- footer -->
+    <footer>
+        <hr>
+        <p>© 2017 <a href="javascript:void(0);" target="_blank">ADMIN</a></p>
+    </footer>
+</div>
+
+

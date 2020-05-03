@@ -1,0 +1,43 @@
+
+
+
+<!-- 右 -->
+<div class="content">
+    <div class="header">
+        <h1 class="page-title">新闻修改</h1>
+    </div>
+
+    <div class="well">
+        <!-- add form -->
+        <form action="{:url('admin/news/update')}" method="post" id="tab" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="{$info._id}">
+            <label>标题：</label>
+            <input type="text" name="title" value="{$info.title}" class="input-xlarge" autocomplete="off">
+            <label>描述：</label>
+            <input type="text" name="desn" value="{$info.desn}" class="input-xlarge" autocomplete="off">
+            <label>作者：</label>
+            <input type="text" name="author" value="{$info.author}" class="input-xlarge" autocomplete="off">
+            <label>内容：</label>
+            <textarea name="body" id="body" style="margin-bottom: 10px">{$info.body}</textarea>
+            <p><button class="btn btn-primary" type="submit">保存</button></p>
+        </form>
+    </div>
+    <!-- footer -->
+    <footer>
+        <hr>
+        <p>© 2017 <a href="javascript:void(0);" target="_blank">ADMIN</a></p>
+    </footer>
+</div>
+<!-- 配置文件 -->
+<script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="/ueditor/ueditor.all.js"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+    var ue = UE.getEditor('body',{
+        initialFrameWidth:1000,
+        initialFrameHeight:230,
+    });
+</script>
+
+

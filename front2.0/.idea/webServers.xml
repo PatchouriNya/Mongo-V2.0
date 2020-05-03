@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="0e5c6bf7-a71b-41be-bbf3-f1ea429aa6a6" name="Mashiro">
+        <fileTransfer rootFolder="/web/front2.0" accessType="SFTP" host="patchouri.club" port="22" sshConfigId="ba9c2707-4d87-40d2-bf77-f38a00270c3c" sshConfig="root@patchouri.club:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
