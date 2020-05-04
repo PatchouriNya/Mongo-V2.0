@@ -277,6 +277,8 @@
                         layer.msg('登陆成功',{icon:1,time:3000});
                         localStorage.setItem('id',data.data.data._id.$oid);
                         this.$router.push({name:'index',params: {token:data.data.data.token,id:data.data.data._id.$oid}});
+                    }else{
+                        layer.msg('用户名或密码不正确',{icon:2,time:3000});
                     }
                 });
             },
