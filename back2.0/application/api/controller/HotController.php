@@ -7,21 +7,29 @@ use think\Controller;
 class HotController extends Controller
 {
     public function hot($id){
-        $redis = redis_connect();
-        $arr = $redis->zRange('click',0,-1);
-        if(!in_array($id,$arr)){
-            $redis->zAdd('click',0,$id);
+
+        try {
+            $redis = redis_connect();
+            $arr = $redis->zRange('click',0,-1);
+            if(!in_array($id,$arr)){
+                $redis->zAdd('click',0,$id);
+            }
+            $click = $redis->zIncrBy('click',1,$id);
+            $table = connMongodb()->news;
+            $table->updateOne(
+                ['_id' => new \MongoDB\BSON\ObjectId($id)],
+                ['$set'=>[
+                    'click' => $click,
+                ]],
+                ['upsert'=>false]
+            );
+            return $click;
+        } catch (\Exception $e) {
+            return api_error('请提供正确的ID');
         }
-        $click = $redis->zIncrBy('click',1,$id);
-        $table = connMongodb()->news;
-        $table->updateOne(
-            ['_id' => new \MongoDB\BSON\ObjectId($id)],
-            ['$set'=>[
-                'click' => $click,
-            ]],
-            ['upsert'=>false]
-        );
-        return $click;
+
+
+
     }
 
     public function hotList(){
