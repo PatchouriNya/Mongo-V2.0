@@ -54,7 +54,7 @@ class CommentsController extends Controller
 
                $redis = redis_connect();
                $redis->select(1);
-               $key = $userid . $newsid.$data['ctime'];
+               $key = $userid . $newsid;
                if(!$redis->exists($key)){
                    $redis->set($key,1);
                    $table->insertOne($data);

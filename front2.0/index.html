@@ -132,7 +132,7 @@
                 <p style="margin-left: 20px">{{item.content}}</p>
             </div>
         </div>
-        <div v-show="tohide">
+        <div v-show="tohide" style="margin-bottom: 50px">
             <textarea ref="toC" v-model="tocomment" cols="60" rows="10" ></textarea>
             <p><button @click="toput(toid)">回复</button></p>
         </div>
@@ -328,7 +328,7 @@
                     // console.log(arr)
 
                     axios.post('http://news.blacksouls.cn/api/comments/create',arr).then(data=>{
-                        console.log(data);
+                        // console.log(data);
                         if(data.data.code == 200){
                             this.$router.go(0);
                         }else if(data.data.msg == '300'){
@@ -383,6 +383,10 @@
             },
             toshow(id){
               this.tohide = !this.tohide;
+              if(this.tohide){
+                  layer.msg('请在下方评论',{icon:1,time:1000});
+              }
+
               this.toid = id;
             },
             getData(){

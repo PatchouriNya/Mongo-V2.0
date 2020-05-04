@@ -73,13 +73,15 @@ class CommentsController extends BaseController
         $res = $table->deleteMany(['_id' => new \MongoDB\BSON\ObjectId($id)]);
 
         if ($res){
-
-            $redis = redis_connect();
-            $redis->select(1);
-            $key = $data['userid'].$data['newsid'].$data['ctime'];
-            if($redis->exists($key)){
-                $redis->del($key);
+            if ($data['to'] == ''){
+                $redis = redis_connect();
+                $redis->select(1);
+                $key = $data['userid'].$data['newsid'];
+                if($redis->exists($key)){
+                    $redis->del($key);
+                }
             }
+
             return $this->success('删除成功','comments/index');
         }else{
             return  $this->error('删除失败');
@@ -97,12 +99,15 @@ class CommentsController extends BaseController
         foreach ($ids as $id){
             $data = $table->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
             $data = (array)$data;
-            $redis = redis_connect();
-            $redis->select(1);
-            $key = $data['userid'].$data['newsid'].$data['ctime'];
-            if($redis->exists($key)){
-                $redis->del($key);
+            if ($data['to'] == ''){
+                $redis = redis_connect();
+                $redis->select(1);
+                $key = $data['userid'].$data['newsid'];
+                if($redis->exists($key)){
+                    $redis->del($key);
+                }
             }
+
             $res = $table->deleteMany(['_id' => new \MongoDB\BSON\ObjectId($id)]);
         }
         if ($res){
